@@ -1,9 +1,10 @@
+// Internal server file for handling requests and serving static files
+
 // Required modules
 import express from 'express'; // Web server framework
 import dotenv from 'dotenv'; // Load environment variables from .env file
 import path from 'path'; // Handles file paths
 import { fileURLToPath } from 'url'; // Convert URL to file path
-
 
 // Loads dotenv variables into process.env
 dotenv.config();
@@ -21,11 +22,14 @@ const __dirname = path.dirname(__filename); // Get folder name of current file
 // Serve static files (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Route handler for GET request to /api-key
+// Route handler for GET requests to API key endpoints
 // Only available in development mode for security
 if (process.env.NODE_ENV === 'development'){
-    app.get('/api-key', (req, res) => {
+    app.get('/map-api-key', (req, res) => {
         res.json({ key: process.env.GOOGLE_MAPS_API_KEY });
+    });
+    app.get('/weather-api-key', (req, res) => {
+        res.json({ key: process.env.OPENWEATHER_API_KEY });
     });
 }
 

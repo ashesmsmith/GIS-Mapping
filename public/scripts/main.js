@@ -4,6 +4,7 @@
 // Calculate and display route using Directions API
 // Calculate and display total distance and duration of route
 
+// Global Variables
 let map;
 let markers = []; // Array to hold map markers
 let locations = []; // Array to hold location data
@@ -12,16 +13,12 @@ let directionsRenderer;
 
 // Initialize
 // 'async' allows us to wait for the map library to load
-async function initMap() {
+export function initMap() {
     // Location coordinates for Rexburg, ID - Shown on map load as default
     const defaultPosition = { lat: 43.8231, lng: -111.7924 };
 
-    // Request libraries from the Google Maps API
-    // 'await' makes sure the library is loaded before continuing
-    const { Map } = await google.maps.importLibrary('maps');
-
     // Find the 'map' div element and display the map in it
-    map = new Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById('map'), {
         center: defaultPosition, // Rexburg, ID
         zoom: 10, // City View
         mapId: 'JS Maps'
@@ -32,6 +29,22 @@ async function initMap() {
     // 'DirectionsRenderer' is used to display the route on the map
     directionsService = new google.maps.DirectionsService();
     directionsRenderer = new google.maps.DirectionsRenderer( { map: map } );
+}
+
+export function setupEventListeners() {
+    // Add Location
+    document.getElementById('add-btn')
+        .addEventListener('click', addLocation);
+
+    // Create Itinerary
+    document.getElementById('create-itinerary-btn')
+        .addEventListener('click', createRoute);
+
+    // SortableJS
+    new Sortable(document.getElementById('locations-list'), {
+        animation: 150,
+        ghostClass: 'ghost'
+    });
 }
 
 // Function to add a location based on user input
@@ -81,14 +94,14 @@ function createRoute() {
     // Sync locations array with drag-and-drop order
     syncLocations();
 
-    // Clear previous route from map
-    directionsRenderer.set('directions', null);
-
     // Check that there are at least 2 locations or return alert
     if (locations.length < 2) {
         alert("Please add at least two locations to create a route.");
         return;
     }
+
+    // Clear previous route from map
+    directionsRenderer.set('directions', null);
 
     // Select Waypoints (all locations except start and end) for the route
     // .map() creates a new array with waypoints in API required format (location, stopover)
@@ -128,6 +141,9 @@ function createRoute() {
             }
         }
     )
+
+    console.log(locations);
+    // !!ADD WEATHER FUNCTIONALITY HERE
 }
 
 // Sync locations array with drag-and-drop order before creating route
@@ -177,28 +193,6 @@ function calculateDuration(durations, i = 0) {
 
     return duration;
 }
-
-// Event Listeners
-// Add Location Button
-// Adds the location from user input to the itinerary list
-const addBtn = document.getElementById('add-btn');
-addBtn.addEventListener('click', addLocation);
-
-// Create Itinerary Button
-// Creates and displays the route on the map with total distance and duration
-const createItineraryBtn = document.getElementById('create-itinerary-btn');
-createItineraryBtn.addEventListener('click', createRoute);
-
-// SortableJS
-// Enable drag-and-drop sorting of locations list
-document.addEventListener('DOMContentLoaded', () => {
-    const locationsList = document.getElementById('locations-list');
-
-    new Sortable(locationsList, {
-        animation: 150,
-        ghostClass: 'ghost'
-    });
-});
 
 // Run on page load
 window.onload = initMap;

@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaScript Maps Project</title>
-
+    <title>GIS Mapping Practice</title>
     <link rel="stylesheet" href="styles/base.css">
 </head>
 
@@ -48,9 +47,17 @@
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script> <!-- For drag-and-drop functionality -->
     <script type="module">
-        import './scripts/map-load.js'; // load Google Maps
-        import './scripts/main.js';     // Waits until map-load has completed
-    </script>
+        import loadGoogleMaps from './scripts/map-load.js' // load Google Maps
+        import { initMap, setupEventListeners } from './scripts/main.js' // main functionality
 
+        // Load Google Maps and initialize the map
+        loadGoogleMaps().then(() => {
+            initMap(); // Initialize the map
+            setupEventListeners(); // Setup event listeners after map is initialized
+        }).catch(error => {
+            console.error('Error loading Google Maps:', error);
+            alert('Failed to load Google Maps. Please try again later.');
+        });
+    </script>
 </body>
 </html>
