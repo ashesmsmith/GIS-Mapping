@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Maps Project</title>
+
+    <link rel="stylesheet" href="styles/base.css">
+</head>
+
+<body>
+    <main>
+        <h1>Itinerary Planner</h1>
+
+        <div id="location-input">
+            <h2>Location Input</h2>
+            <p>Please enter a location name and address to add to the itinerary.</p>
+
+            <label for="nickname">Location Nickname:</label>
+            <input type="text" id="nickname" placeholder="Nickname for Location" required>
+            
+            <label for="Street-address">Location:</label>
+            <input type="text" id="location" placeholder="Full address or city and state" required>
+
+            <button id="add-btn" type="submit">Add Location</button>
+        </div>
+
+        <div id="create-itinerary">
+            <h2>Itinerary</h2>
+            <p>Drag and drop to reorder locations.</p>
+            <p>Click "Create Itinerary" to generate the route and calculate total distance and duration.</p>
+            <ul id="locations-list">
+                <!-- List of locations will be added here -->
+            </ul>
+
+            <button id="create-itinerary-btn">Create Itinerary</button>
+        </div>
+
+        <!-- Total Distance and Duration calculated in main.js -->
+        <h3>Total Distance: <span id="total-distance"></span></h3>
+        <h3>Total Duration: <span id="total-duration"></span></h3>
+
+        <div id="map">
+            <!-- Google Map will be displayed here using map-load.js -->
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script> <!-- For drag-and-drop functionality -->
+    <script type="module">
+        import './scripts/map-load.js'; // load Google Maps
+        import './scripts/main.js';     // Waits until map-load has completed
+    </script>
+
+</body>
+</html>

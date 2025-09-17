@@ -1,0 +1,27 @@
+{
+  "name": "gis-mapping",
+  "version": "1.0.0",
+  "description": "A web-based mapping project to learn and practice GIS and Google Maps APIs.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashesmsmith/GIS-Mapping.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ashesmsmith/GIS-Mapping/issues"
+  },
+  "homepage": "https://github.com/ashesmsmith/GIS-Mapping#readme",
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0"
+  }
+}
+

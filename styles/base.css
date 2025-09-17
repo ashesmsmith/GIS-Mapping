@@ -1,0 +1,85 @@
+/* Basic CSS styles for the webpage */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Lucida Sans;
+}
+
+main {
+    padding: 1rem 2rem;
+}
+
+h1 {
+    font-family: Garamond;
+    text-align: center;
+    letter-spacing: .2rem;
+    padding: 1rem;
+}
+
+h2 {
+    font-family: Garamond;
+    padding: .5rem 0;
+}
+
+h3 {
+    text-align: center;
+}
+
+p {
+    margin: 1rem 0;
+    line-height: 1.5;
+}
+
+#location-input, #create-itinerary {
+    margin: 1rem auto;
+    padding: 1rem;
+    border: 1px solid darkgreen;
+    border-radius: 10px;
+}
+
+label {
+    margin: 1rem 0 .5rem 0;
+    font-weight: bold;
+}
+
+input {
+    display: block;
+    margin: .5rem 0 1.5rem 0;
+    padding: 1rem;
+    width: 50%;
+    height: auto;
+    border: 2px solid darkgreen;
+    border-radius: 10px;
+}
+
+button {
+    display: block;
+    background-color: darkgreen;
+    color: white;
+    margin: 1rem 0;
+    padding: 1rem;
+    border: darkgreen;
+    border-radius: 10px;
+}
+
+ul {
+    list-style-type: none;
+    margin: 1rem;
+}
+
+li {
+    margin: .5rem;
+    padding: .5rem;
+    width: 50%;
+    border: 1px solid darkgreen;
+}
+
+#map {
+    margin: 1rem auto;
+    height: 500px;
+    width: 80%;
+    border: 5px solid darkgreen;
+    border-radius: 10px;
+}
