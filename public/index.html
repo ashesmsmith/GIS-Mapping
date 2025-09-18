@@ -15,11 +15,11 @@
             <h2>Location Input</h2>
             <p>Please enter a location name and address to add to the itinerary.</p>
 
-            <label for="nickname">Location Nickname:</label>
-            <input type="text" id="nickname" placeholder="Nickname for Location" required>
-            
             <label for="Street-address">Location:</label>
             <input type="text" id="location" placeholder="Full address or city and state" required>
+            
+            <label for="nickname">Nickname:</label>
+            <input type="text" id="nickname" placeholder="Nickname for Location" required>
 
             <button id="add-btn" type="submit">Add Location</button>
         </div>
@@ -46,18 +46,6 @@
 
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script> <!-- For drag-and-drop functionality -->
-    <script type="module">
-        import loadGoogleMaps from './scripts/map-load.js' // load Google Maps
-        import { initMap, setupEventListeners } from './scripts/main.js' // main functionality
-
-        // Load Google Maps and initialize the map
-        loadGoogleMaps().then(() => {
-            initMap(); // Initialize the map
-            setupEventListeners(); // Setup event listeners after map is initialized
-        }).catch(error => {
-            console.error('Error loading Google Maps:', error);
-            alert('Failed to load Google Maps. Please try again later.');
-        });
-    </script>
+    <script type="module" src="scripts/main.js"></script>
 </body>
 </html>

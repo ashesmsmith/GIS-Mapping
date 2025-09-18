@@ -4,76 +4,80 @@
 // Calculate and display route using Directions API
 // Calculate and display total distance and duration of route
 
-// Global Variables
+// Imports
+import loadMaps from './map-load.js';
+import loadWeather from './weather-load.js';
+
+// Variables
 let map;
 let markers = []; // Array to hold map markers
 let locations = []; // Array to hold location data
 let directionsService;
 let directionsRenderer;
 
-// Initialize
-// 'async' allows us to wait for the map library to load
-export function initMap() {
-    // Location coordinates for Rexburg, ID - Shown on map load as default
-    const defaultPosition = { lat: 43.8231, lng: -111.7924 };
+// Initialize and display the map
+function initMap() {
+    const defaultPosition = { lat: 43.8231, lng: -111.7924 }; // Rexburg, ID, USA
 
     // Find the 'map' div element and display the map in it
     map = new google.maps.Map(document.getElementById('map'), {
-        center: defaultPosition, // Rexburg, ID
+        center: defaultPosition,
         zoom: 10, // City View
         mapId: 'JS Maps'
     });
 
-    // Initialize Directions Service and Renderer - Directions API
-    // 'DirectionsService' is used to calculate the route
-    // 'DirectionsRenderer' is used to display the route on the map
-    directionsService = new google.maps.DirectionsService();
-    directionsRenderer = new google.maps.DirectionsRenderer( { map: map } );
+    // Initialize Directions Service and Renderer
+    directionsService = new google.maps.DirectionsService(); // Used to calculate the route
+    directionsRenderer = new google.maps.DirectionsRenderer( { map: map } ); // Used to display the route
 }
 
-export function setupEventListeners() {
-    // Add Location
+// Setup event listeners for buttons and sortable list
+function setupEventListeners() {
+    // Add Location Button
     document.getElementById('add-btn')
         .addEventListener('click', addLocation);
 
-    // Create Itinerary
+    // Create Itinerary Button
     document.getElementById('create-itinerary-btn')
         .addEventListener('click', createRoute);
 
-    // SortableJS
+    // SortableJS - Drag-and-Drop for Locations List
     new Sortable(document.getElementById('locations-list'), {
         animation: 150,
         ghostClass: 'ghost'
     });
 }
 
-// Function to add a location based on user input
-function addLocation() {
+// Add a user entered location to the list
+async function addLocation() {
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker"); // Load the marker library
     const locationInput = document.querySelector('#location').value;
     const locationNickname = document.querySelector('#nickname').value;
 
+    // Alert user of missing input
     if (!locationInput || !locationNickname) {
-        alert("Please enter a Location and Nickname.");
+        alert("Please enter a Nickname and Location.");
         return;
     }
 
+    // Geocode the location input to get latitude and longitude
     const geocoder = new google.maps.Geocoder();
-    geocoder.geocode( { 'address': locationInput }, function(results, status) {
+    geocoder.geocode({ 'address': locationInput }, (results, status) =>{
         if (status == 'OK') {
             const position = results[0].geometry.location;
 
-            // Add location to locations array
-            locations.push({ nickname: locationNickname, location: position});
+            // Add location to list with updated location format (lat, lng)
+            locations.push({ nickname: locationNickname, location: { lat: position.lat(), lng: position.lng() } });
 
             // Create a marker for the location
-            const marker = new google.maps.Marker({
-                map,
+            const marker = new AdvancedMarkerElement({
+                map: map,
                 position: position,
                 title: locationNickname
             });
             markers.push(marker);
         } else {
-            alert('Geocode Failed for reason: ' + status);
+            alert('Geocode Failed: ' + status);
         }
 
         // Add location to the list on page
@@ -84,19 +88,18 @@ function addLocation() {
 
     });
 
-    // Clear the input fields
+    // Clear the user input fields
     document.querySelector('#nickname').value = '';
     document.querySelector('#location').value = '';
 }
 
-// Function to create and display the route
+// Create and display the route on map
 function createRoute() {
-    // Sync locations array with drag-and-drop order
-    syncLocations();
+    syncLocations(); // Sync locations array with drag-and-drop order
 
-    // Check that there are at least 2 locations or return alert
+    // Check that there are at least 2 locations
     if (locations.length < 2) {
-        alert("Please add at least two locations to create a route.");
+        alert("Please add at least 2 locations to create a route.");
         return;
     }
 
@@ -104,10 +107,9 @@ function createRoute() {
     directionsRenderer.set('directions', null);
 
     // Select Waypoints (all locations except start and end) for the route
-    // .map() creates a new array with waypoints in API required format (location, stopover)
     let waypoints = []; // Remains empty if only 2 locations
     if (locations.length > 2) {
-        waypoints = locations.slice(1, -1).map(loc => ({
+        waypoints = locations.slice(1, -1).map(loc => ({ //creates new array of waypoints in required format
             location: loc.location,
             stopover: true
         }));
@@ -125,16 +127,14 @@ function createRoute() {
             if (status == 'OK') {
                 directionsRenderer.setDirections(result);
 
-                // Calculate and Display Total Distance
+                // Calculate and display Total Distance
                 const distances = result.routes[0].legs.map(leg => leg.distance.value); // distance in meters
                 const totalDistance = calculateDistance(distances).toFixed(2);
-
                 document.getElementById('total-distance').innerText = `${(totalDistance)} miles`;
 
-                // Calculate and Display Total Duration
+                // Calculate and display Total Duration
                 const durations = result.routes[0].legs.map(leg => leg.duration.value); // duration in seconds
                 const totalDuration = calculateDuration(durations);
-
                 document.getElementById('total-duration').innerText = `${totalDuration}`;
             } else {
                 alert('Directions Request Failed:' + status);
@@ -142,8 +142,8 @@ function createRoute() {
         }
     )
 
-    console.log(locations);
-    // !!ADD WEATHER FUNCTIONALITY HERE
+    // Get weather data from Google Weather API
+    getWeather(locations);
 }
 
 // Sync locations array with drag-and-drop order before creating route
@@ -162,7 +162,7 @@ function syncLocations() {
     locations = newLocationsOrder;
 }
 
-// Function to calculate total distance in miles
+// Calculate total distance in miles
 function calculateDistance(distances, i = 0) {
     if (i >= distances.length) return 0; // base case to stop recursion
 
@@ -171,7 +171,7 @@ function calculateDistance(distances, i = 0) {
     return (distances[i] * 0.00062137) + calculateDistance(distances, i + 1);
 }
 
-// Function to calculate total time in minutes
+// Calculate total time in minutes then hours and minutes
 function calculateDuration(durations, i = 0) {
     if (i >= durations.length) return 0; // base case to stop recursion
 
@@ -179,7 +179,7 @@ function calculateDuration(durations, i = 0) {
     // Recursion - add current duration conversion to the sum of the rest
     let duration = (durations[i] / 60) + calculateDuration(durations, i + 1);
 
-    // Formatting - Complete after recursion
+    // Formatting - Completed after recursion
     // Convert to hours and minutes if 60 minutes or more
     if (i === 0) {
         if (duration >= 60) {
@@ -194,5 +194,23 @@ function calculateDuration(durations, i = 0) {
     return duration;
 }
 
-// Run on page load
-window.onload = initMap;
+// Get Weather Data from Google Weather API
+async function getWeather(locations) {
+    await loadWeather(locations).then(weatherData => {
+        console.log(weatherData);
+        // !! ADD ICON TO MARKERS AND DISPLAY WEATHER DATA WHEN CLICKED !!
+    });
+}
+
+
+// Load Google Maps API and initialize map
+// Immediately Invoked Function Expression (IIFE)
+(async () => {
+    try {
+        await loadMaps();
+        initMap();
+        setupEventListeners();
+    } catch (error) {
+        console.error('Error Loading: ', error);
+    }  
+})();

@@ -12,16 +12,22 @@
 
 # Development Environment
 
-{Describe the tools that you used to develop the software}
+Visual Studio Code
 
-{Describe the programming language that you used and any libraries.}
+HTML
+CSS
+JavaScript
+Google Maps API
+Google Directions API
+Google Geocoder API
+Google Weather API
+SortableJS
 
 # Useful Websites
 
-{Make a list of websites that you found helpful in this project}
+- Google Maps Platform - Import GeoJSON Data into Maps - https://developers.google.com/maps/documentation/javascript/importing_data
 
-- [Web Site Name](http://url.link.goes.here)
-- [Web Site Name](http://url.link.goes.here)
+- Google Maps Platform - Weather API Overview - https://developers.google.com/maps/documentation/weather/overview
 
 # Future Work
 
