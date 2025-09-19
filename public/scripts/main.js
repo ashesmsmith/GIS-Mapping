@@ -23,7 +23,8 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: defaultPosition,
         zoom: 10, // City View
-        mapId: 'JS Maps'
+        clickableIcons: false,
+        mapId: 'JS Maps',
     });
 
     // Initialize Directions Service and Renderer
@@ -49,8 +50,7 @@ function setupEventListeners() {
 }
 
 // Add a user entered location to the list
-async function addLocation() {
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker"); // Load the marker library
+function addLocation() {
     const locationInput = document.querySelector('#location').value;
     const locationNickname = document.querySelector('#nickname').value;
 
@@ -68,14 +68,6 @@ async function addLocation() {
 
             // Add location to list with updated location format (lat, lng)
             locations.push({ nickname: locationNickname, location: { lat: position.lat(), lng: position.lng() } });
-
-            // Create a marker for the location
-            const marker = new AdvancedMarkerElement({
-                map: map,
-                position: position,
-                title: locationNickname
-            });
-            markers.push(marker);
         } else {
             alert('Geocode Failed: ' + status);
         }
@@ -88,9 +80,10 @@ async function addLocation() {
 
     });
 
-    // Clear the user input fields
-    document.querySelector('#nickname').value = '';
+    // Clear input fields for reuse
     document.querySelector('#location').value = '';
+    document.querySelector('#nickname').value = '';
+    document.querySelector('#location').focus();
 }
 
 // Create and display the route on map
@@ -197,11 +190,44 @@ function calculateDuration(durations, i = 0) {
 // Get Weather Data from Google Weather API
 async function getWeather(locations) {
     await loadWeather(locations).then(weatherData => {
-        console.log(weatherData);
-        // !! ADD ICON TO MARKERS AND DISPLAY WEATHER DATA WHEN CLICKED !!
+        addMarkers(weatherData); // Add markers to map with weather info
     });
 }
 
+// Add markers with weather data to map
+async function addMarkers(data) {
+    const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
+
+    const infoWindow = new google.maps.InfoWindow();
+
+    for (const loc of data) {
+        const position = { lat: loc.lat, lng: loc.lng };
+
+        const marker = new AdvancedMarkerElement({
+            position,
+            map,
+            title: `${loc.nickname}`,
+        });
+
+        marker.addEventListener('click', () => {
+            infoWindow.setContent(`
+                <div class='weather-info'>
+                    <h4>${loc.nickname}</h4>
+                    <img src='${loc.icon}.png' alt='${loc.desc} icon'>
+                    <p>${loc.desc}</p>
+                    <p>Current: ${loc.temp}°F</p>
+                </div>
+            `);
+
+            infoWindow.open({
+                anchor: marker,
+                map,
+            });
+        })
+
+        markers.push(marker);
+    }
+}
 
 // Load Google Maps API and initialize map
 // Immediately Invoked Function Expression (IIFE)

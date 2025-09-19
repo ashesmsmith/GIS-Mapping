@@ -29,6 +29,8 @@ SortableJS
 
 - Google Maps Platform - Weather API Overview - https://developers.google.com/maps/documentation/weather/overview
 
+- Custom Info Windows - https://spatialized.io/insights/google-maps/interactivity-and-events/custom-info-windows
+
 # Future Work
 
 {Make a list of things that you need to fix, improve, and add in the future.}

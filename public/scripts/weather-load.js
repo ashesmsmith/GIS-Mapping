@@ -34,10 +34,9 @@ export default async function loadWeather(locations) {
                 nickname: loc.nickname,
                 lat: lat,
                 lng: lng,
-                currentTemp: weather.temperature.degrees,
-                feelsLike:weather.feelsLikeTemperature.degrees,
-                condition: weather.weatherCondition.description.text[0],
-                conditionIcon: weather.weatherCondition.iconBaseUri[0]
+                temp: weather.temperature.degrees,
+                desc: weather.weatherCondition.description.text,
+                icon: weather.weatherCondition.iconBaseUri,
             });
         } catch (error) {
             console.error('Network or parsing:', error);
