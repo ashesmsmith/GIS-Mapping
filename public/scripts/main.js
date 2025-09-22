@@ -14,6 +14,7 @@ let markers = []; // Array to hold map markers
 let locations = []; // Array to hold location data
 let directionsService;
 let directionsRenderer;
+let infoWindow;
 
 // Initialize and display the map
 function initMap() {
@@ -30,6 +31,8 @@ function initMap() {
     // Initialize Directions Service and Renderer
     directionsService = new google.maps.DirectionsService(); // Used to calculate the route
     directionsRenderer = new google.maps.DirectionsRenderer( { map: map } ); // Used to display the route
+
+    infoWindow = new google.maps.InfoWindow();
 }
 
 // Setup event listeners for buttons and sortable list
@@ -196,34 +199,26 @@ async function getWeather(locations) {
 
 // Add markers with weather data to map
 async function addMarkers(data) {
-    const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
-
-    const infoWindow = new google.maps.InfoWindow();
-
     for (const loc of data) {
         const position = { lat: loc.lat, lng: loc.lng };
 
-        const marker = new AdvancedMarkerElement({
+        const contentString = `<div class='weather-info'>
+            <h3>${loc.nickname}</h3>
+            <img src='${loc.icon}.png' alt='${loc.desc} Icon' width='50' height='50'>
+            <p>${loc.desc}</p>
+            <p>${loc.temp}°F</p>
+        </div>`
+
+        const marker = new google.maps.Marker({
             position,
             map,
-            title: `${loc.nickname}`,
+            title: '',
         });
 
-        marker.addEventListener('click', () => {
-            infoWindow.setContent(`
-                <div class='weather-info'>
-                    <h4>${loc.nickname}</h4>
-                    <img src='${loc.icon}.png' alt='${loc.desc} icon'>
-                    <p>${loc.desc}</p>
-                    <p>Current: ${loc.temp}°F</p>
-                </div>
-            `);
-
-            infoWindow.open({
-                anchor: marker,
-                map,
-            });
-        })
+        marker.addListener('click', () => {
+            infoWindow.setContent(contentString);
+            infoWindow.open(map, marker);
+        });
 
         markers.push(marker);
     }

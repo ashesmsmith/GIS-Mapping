@@ -83,3 +83,12 @@ li {
     border: 5px solid darkgreen;
     border-radius: 10px;
 }
+
+.weather-info {
+    background-color: lightgray;
+    text-align: center;
+    line-height: .5rem;
+    margin: 0 auto;
+    padding: 1rem;
+    border-radius: 10px;
+}
