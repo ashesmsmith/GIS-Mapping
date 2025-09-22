@@ -10,6 +10,7 @@ export default async function loadWeather(locations) {
         apiKey = data.key; 
     } catch (error) {
         console.error('Error fetching API key:', error);
+        return[];
     }
 
     let weatherData = [];

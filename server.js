@@ -23,12 +23,9 @@ const __dirname = path.dirname(__filename); // Get folder name of current file
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Route handler for GET requests to API key endpoints
-// Only available in development mode for security
-if (process.env.NODE_ENV === 'development'){
-    app.get('/api-key', (req, res) => {
-        res.json({ key: process.env.GOOGLE_MAPS_API_KEY });
-    });
-}
+app.get('/api-key', (req, res) => {
+    res.json({ key: process.env.GOOGLE_MAPS_API_KEY });
+});
 
 // Start server
 app.listen(port, () => {
