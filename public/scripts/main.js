@@ -203,7 +203,7 @@ async function addMarkers(data) {
         const position = { lat: loc.lat, lng: loc.lng };
 
         const contentString = `<div class='weather-info'>
-            <h3>${loc.nickname}</h3>
+            <h4>${loc.nickname}</h4>
             <img src='${loc.icon}.png' alt='${loc.desc} Icon' width='50' height='50'>
             <p>${loc.desc}</p>
             <p>${loc.temp}°F</p>
