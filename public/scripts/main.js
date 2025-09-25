@@ -30,7 +30,7 @@ function initMap() {
 
     // Initialize Directions Service and Renderer
     directionsService = new google.maps.DirectionsService(); // Used to calculate the route
-    directionsRenderer = new google.maps.DirectionsRenderer( { map: map } ); // Used to display the route
+    directionsRenderer = new google.maps.DirectionsRenderer( { map: map, suppressMarkers: true } ); // Used to display the route
 
     infoWindow = new google.maps.InfoWindow();
 }
@@ -88,7 +88,7 @@ function addLocation() {
 }
 
 // Create and display the route on map
-function createRoute() {
+async function createRoute() {
     syncLocations(); // Sync locations array with drag-and-drop order
 
     // Check that there are at least 2 locations
@@ -99,6 +99,8 @@ function createRoute() {
 
     // Clear previous route from map
     directionsRenderer.set('directions', null);
+    markers.forEach(m => m.setMap(null));
+    markers = [];
 
     // Select Waypoints (all locations except start and end) for the route
     let waypoints = []; // Remains empty if only 2 locations
@@ -109,35 +111,40 @@ function createRoute() {
         }));
     }
 
-    // Directions Service method route() to calculate the route
-    directionsService.route(
-        {
-            origin: locations[0].location, // Required - Start location
-            destination: locations[locations.length - 1].location, // Required - End location
-            waypoints: waypoints, // Optional - All the locations in between
-            travelMode: google.maps.TravelMode.DRIVING, // Required - Travel by driving
-        },
-        (result, status) => {
-            if (status == 'OK') {
-                directionsRenderer.setDirections(result);
+    try {
+        // Directions Service method route() to calculate the route
+        directionsService.route(
+            {
+                origin: locations[0].location, // Required - Start location
+                destination: locations[locations.length - 1].location, // Required - End location
+                waypoints: waypoints, // Optional - All the locations in between
+                travelMode: google.maps.TravelMode.DRIVING, // Required - Travel by driving
+            },
+            (result, status) => {
+                if (status == 'OK') {
+                    directionsRenderer.setDirections(result);
 
-                // Calculate and display Total Distance
-                const distances = result.routes[0].legs.map(leg => leg.distance.value); // distance in meters
-                const totalDistance = calculateDistance(distances).toFixed(2);
-                document.getElementById('total-distance').innerText = `${(totalDistance)} miles`;
+                    // Calculate and display Total Distance
+                    const distances = result.routes[0].legs.map(leg => leg.distance.value); // distance in meters
+                    const totalDistance = calculateDistance(distances).toFixed(2);
+                    document.getElementById('total-distance').innerText = `${(totalDistance)} miles`;
 
-                // Calculate and display Total Duration
-                const durations = result.routes[0].legs.map(leg => leg.duration.value); // duration in seconds
-                const totalDuration = calculateDuration(durations);
-                document.getElementById('total-duration').innerText = `${totalDuration}`;
-            } else {
-                alert('Directions Request Failed:' + status);
+                    // Calculate and display Total Duration
+                    const durations = result.routes[0].legs.map(leg => leg.duration.value); // duration in seconds
+                    const totalDuration = calculateDuration(durations);
+                    document.getElementById('total-duration').innerText = `${totalDuration}`;
+
+                    loadWeather(locations).then(weatherData => {
+                        addMarkers(weatherData);
+                    });
+                } else {
+                    alert('Directions Request Failed:' + status);
+                }
             }
-        }
-    )
-
-    // Get weather data from Google Weather API
-    getWeather(locations);
+        )
+    } catch (error) {
+        console.error("Error creating route:", error);
+    }
 }
 
 // Sync locations array with drag-and-drop order before creating route
@@ -186,13 +193,6 @@ function calculateDuration(durations, i = 0) {
     }
 
     return duration;
-}
-
-// Get Weather Data from Google Weather API
-async function getWeather(locations) {
-    await loadWeather(locations).then(weatherData => {
-        addMarkers(weatherData); // Add markers to map with weather info
-    });
 }
 
 // Add markers with weather data to map
