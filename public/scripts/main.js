@@ -55,11 +55,10 @@ function setupEventListeners() {
 // Add a user entered location to the list
 function addLocation() {
     const locationInput = document.querySelector('#location').value;
-    const locationNickname = document.querySelector('#nickname').value;
 
     // Alert user of missing input
-    if (!locationInput || !locationNickname) {
-        alert("Please enter a Nickname and Location.");
+    if (!locationInput) {
+        alert("Please enter a Location.");
         return;
     }
 
@@ -68,24 +67,23 @@ function addLocation() {
     geocoder.geocode({ 'address': locationInput }, (results, status) =>{
         if (status == 'OK') {
             const position = results[0].geometry.location;
+            const formattedName = results[0].formatted_address;
 
             // Add location to list with updated location format (lat, lng)
-            locations.push({ nickname: locationNickname, location: { lat: position.lat(), lng: position.lng() } });
+            locations.push({ nickname: formattedName, location: { lat: position.lat(), lng: position.lng() } });
+
+            // Add location to the list on page
+            const locationsList = document.getElementById('locations-list');
+            const listItem = document.createElement('li');
+            listItem.textContent = `${formattedName}`;
+            locationsList.appendChild(listItem);
         } else {
             alert('Geocode Failed: ' + status);
         }
-
-        // Add location to the list on page
-        const locationsList = document.getElementById('locations-list');
-        const listItem = document.createElement('li');
-        listItem.textContent = `${locationNickname}`;
-        locationsList.appendChild(listItem);
-
     });
 
-    // Clear input fields for reuse
+    // Clear input field for reuse
     document.querySelector('#location').value = '';
-    document.querySelector('#nickname').value = '';
     document.querySelector('#location').focus();
 }
 
