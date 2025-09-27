@@ -134,6 +134,7 @@ async function createRoute() {
                     const totalDuration = calculateDuration(durations);
                     document.getElementById('total-duration').innerText = `${totalDuration}`;
 
+                    // Load the weather data then add the markers to map with custom info
                     loadWeather(locations).then(weatherData => {
                         addMarkers(weatherData);
                     });

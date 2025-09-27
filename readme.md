@@ -1,19 +1,20 @@
 # Overview
 
-{Important! Do not say in this section that this is college assignment. Talk about what you are trying to accomplish as a software engineer to further your learning.}
+The GIS-Mapping program uses multiple Google Maps APIs to create a Travel Itinerary that includes current weather information in the user entered locations.
 
-{Provide a description the map software that you wrote. Describe how to use your software. Describe the source of the data that you used.}
+The user enters their desired locations and the program calculates the route, total distance, total duration, and the fetches the current weather for each location.
 
-{Describe your purpose for writing this software.}
+The program was written for the purpose of having a visual representation of a travel route and the weather along the way.
 
-{Provide a link to your YouTube demonstration. It should be a 4-5 minute demo of the software running and a walkthrough of the code.}
+[Software Demo Video](https://youtu.be/9fq8u1i96GU)
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Itinerary Planner Website](https://gis-mapping.onrender.com/)
 
 # Development Environment
 
 Visual Studio Code
-
+Render
+GitHub
 HTML
 CSS
 JavaScript
@@ -35,6 +36,7 @@ SortableJS
 
 {Make a list of things that you need to fix, improve, and add in the future.}
 
-- Item 1
-- Item 2
-- Item 3
+- Add a layover showing the weather across the route instead of only the destinations
+- Add the ability to view a weather forecast for 3,5, and 7 days later
+- Add more data such as humidity, wind speed, feels like temperature, and more
+- Add the ability to remove locations from the list
